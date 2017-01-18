@@ -56,11 +56,14 @@ import UIKit
     
     weak open var delegate:BWWalkthroughViewControllerDelegate?
     
+    open var finished: (()->())?
+    
     // If you need a page control, next or prev buttons, add them via IB and connect with these Outlets
     @IBOutlet open var pageControl:UIPageControl?
     @IBOutlet open var nextButton:UIButton?
     @IBOutlet open var prevButton:UIButton?
     @IBOutlet open var closeButton:UIButton?
+    @IBOutlet open var finishButton:UIButton?
     
     open var currentPage: Int {    // The index of the current page (readonly)
         get{
@@ -157,6 +160,8 @@ import UIKit
     /// connect the button to this IBAction and implement the delegate with the skipWalkthrough
     @IBAction open func close(_ sender: AnyObject) {
         delegate?.walkthroughCloseButtonPressed?()
+        
+        finished?()
     }
     
     func pageControlDidTouch(){
@@ -230,7 +235,13 @@ import UIKit
         }else{
             nextButton?.isHidden = false
         }
-        
+
+        if currentPage == controllers.count - 1{
+            finishButton?.isHidden = false
+        }else{
+            finishButton?.isHidden = true
+        }
+
         if currentPage == 0{
             prevButton?.isHidden = true
         }else{
